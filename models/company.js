@@ -49,8 +49,9 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
+  //add searchFilters object as paramter --- {minEmployees: 4, maxEmployees: 10, ...}
   static async findAll(searchFilters = {}) {
-    const companiesRes = await db.query(
+    const query = await db.query(
           `SELECT handle,
                   name,
                   description,
@@ -62,7 +63,33 @@ class Company {
     let queryValues = [];
 
     const { minEmployees, maxEmployees, name } = searchFilters;
-    
+
+    if(minEmployees > maxEmployees) {
+      throw new BadRequestError('Minimum employee number cannot be greater than maximum employee number.');
+    }
+
+    //we add the query string values to the queryValues array and we add necessary WHERE expressions to the whereStatements array.
+    if(minEmployees !== undefined) {
+      queryValues.push(minEmployees);
+      whereStatements.push(`numEmployees <= $${queryValues.length}`);
+    }
+    if(maxEmployees !== undefined) {
+      queryValues.push(maxEmployees);
+      whereStatements.push(`numEmployees >= $${queryValues.length}`);
+    }
+    if(name) {
+      queryValues.push(name);
+      whereStatements.push(`name ILIKE $${queryValues.length}`);
+    }
+
+    //formatting query properly
+    if (whereStatements.length > 0) {
+      query += " WHERE " + whereExpressions.join(" AND ");
+    }
+
+    //last formatting for query and return results of query
+    query += " ORDER BY name";
+    const companiesRes = await db.query(query, queryValues);
     return companiesRes.rows;
   }
 
