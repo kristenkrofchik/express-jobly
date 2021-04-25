@@ -53,6 +53,7 @@ function ensureAdmin(req, res, next) {
   }
 }
 
+//Middleware to user when a user is logged in as an admin, or is the correct user for the task (i.e. the user is viewing, editing, or deleting their own information). if not, raises unauthorized.
 function ensureCorrectUserOrAdmin(req, res, next) {
   try {
     if (!res.locals.user.isAdmin || !(res.locals.user.username = req.params.username)) {
