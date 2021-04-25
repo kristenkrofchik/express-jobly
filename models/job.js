@@ -7,16 +7,37 @@ const { sqlForPartialUpdate } = require("../helpers/sql");
 class Job {
 
 //create a job from data, update db, and return new job data.
-//data should be { title, }
+//data should be { title, salary, equity, company_handle }
+//returns { title, salary, equity, company_handle }
+//throws BadRequestError is job is already in db
 
-CREATE TABLE jobs (
-    id SERIAL PRIMARY KEY,
-    title TEXT NOT NULL,
-    salary INTEGER CHECK (salary >= 0),
-    equity NUMERIC CHECK (equity <= 1.0),
-    company_handle VARCHAR(25) NOT NULL
-      REFERENCES companies ON DELETE CASCADE
-  );
+    static async create({ title, salary, equity, company_handle }) {
+    const duplicateCheck = await db.query(
+          `SELECT title
+           FROM jobs
+           WHERE handle = $1`,
+        [handle]);
+
+    if (duplicateCheck.rows[0])
+      throw new BadRequestError(`Duplicate company: ${handle}`);
+
+    const result = await db.query(
+          `INSERT INTO companies
+           (handle, name, description, num_employees, logo_url)
+           VALUES ($1, $2, $3, $4, $5)
+           RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`,
+        [
+          handle,
+          name,
+          description,
+          numEmployees,
+          logoUrl,
+        ],
+    );
+    const company = result.rows[0];
+
+    return company;
+  }
 
 
 }
