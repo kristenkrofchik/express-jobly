@@ -42,6 +42,8 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
+//Middleware to use when user is logged in as admin. if not, raises unauthorized.
+
 function ensureAdmin(req, res, next) {
   try {
     if(!res.locals.user.isAdmin) throw new UnauthorizedError();
