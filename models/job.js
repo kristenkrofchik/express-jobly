@@ -9,35 +9,28 @@ class Job {
 //create a job from data, update db, and return new job data.
 //data should be { title, salary, equity, company_handle }
 //returns { title, salary, equity, company_handle }
-//throws BadRequestError is job is already in db
 
     static async create({ title, salary, equity, company_handle }) {
-    const duplicateCheck = await db.query(
-          `SELECT title
-           FROM jobs
-           WHERE handle = $1`,
-        [handle]);
-
-    if (duplicateCheck.rows[0])
-      throw new BadRequestError(`Duplicate company: ${handle}`);
-
-    const result = await db.query(
-          `INSERT INTO companies
-           (handle, name, description, num_employees, logo_url)
-           VALUES ($1, $2, $3, $4, $5)
-           RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`,
+    
+      const result = await db.query(
+          `INSERT INTO jobs
+           (title, salary, equity, company_handle)
+           VALUES ($1, $2, $3, $4)
+           RETURNING title, salary, equity, company_handle AS "companyHandle"`,
         [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
+          title,
+          salary,
+          equity,
+          company_handle,
         ],
     );
-    const company = result.rows[0];
+    const job = result.rows[0];
 
-    return company;
+    return job;
   }
 
+  //Find all jobs
+  //returns [{ title, salary, equity, company_handle }, ...]
+  static async findAll
 
 }
