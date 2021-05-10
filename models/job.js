@@ -31,6 +31,47 @@ class Job {
 
   //Find all jobs
   //returns [{ title, salary, equity, company_handle }, ...]
-  static async findAll
+  //add searchFilters object as paramter {minSalary: 10000, hasEquity: false, ...}
+  static async findAll(searchFilters = {}) {
+    const query = await db.query(
+      `SELECT title, 
+              salary,
+              equity,
+              company_handle AS companyHandle
+      FROM jobs`)
 
+    let whereStatements = [];
+    let queryValues = [];
+
+    const { title, minSalary, hasEquity } = searchFilters;
+
+    //we add the query string values to the queryValues array and we add necessary WHERE expressions to the whereStatements array.
+
+    if(minSalary !== undefined) {
+      queryValues.push(minSalary);
+      whereStatements.push(`minSalary >= $${queryValues.length}`);
+    }
+    if(hasEquity !== undefined) {
+      queryValues.push(hasEquity);
+      whereStatements.push(`hasEquity = $${queryValues.length}`);
+    }
+    if(title) {
+      queryValues.push(title);
+      whereStatements.push(`name ILIKE $${queryValues.length}`);
+    }
+
+    if (whereStatements.length > 0) {
+      query += " WHERE " + whereExpressions.join(" AND ");
+    }
+
+    //last formatting for query and return results of query
+    query += " ORDER BY title";
+    const jobsRes = await db.query(query, queryValues);
+    return jobsRes.rows;
+    }
+
+
+
+    
 }
+
