@@ -8,7 +8,7 @@ class Job {
 
 //create a job from data, update db, and return new job data.
 //data should be { title, salary, equity, company_handle }
-//returns { title, salary, equity, company_handle }
+//returns { title, salary, equity, companyHandle }
 
     static async create({ title, salary, equity, company_handle }) {
     
@@ -30,14 +30,14 @@ class Job {
   }
 
   //Find all jobs
-  //returns [{ title, salary, equity, company_handle }, ...]
+  //returns [{ title, salary, equity, companyHandle }, ...]
   //add searchFilters object as paramter {minSalary: 10000, hasEquity: false, ...}
   static async findAll(searchFilters = {}) {
     const query = await db.query(
       `SELECT title, 
               salary,
               equity,
-              company_handle AS companyHandle
+              company_handle AS "companyHandle"
       FROM jobs`)
 
     let whereStatements = [];
@@ -70,8 +70,54 @@ class Job {
     return jobsRes.rows;
     }
 
+    //given an individual job title, return data about that job
+    //returns {title, salary, equity, companyHandle}
+    //throws NotFoundError if not found
+    static async get(id) {
+      const jobRes = await db.query(
+            `SELECT title,
+                    salary,
+                    equity,
+                    company_handle AS "companyHandle"
+             FROM jobs
+             WHERE id = $1`,
+          [id]);
+  
+      const job = jobRes.rows[0];
+  
+      if (!job) throw new NotFoundError(`No job: ${id}`);
+  
+      return job;
+    }
 
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
