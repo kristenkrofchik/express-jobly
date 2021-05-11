@@ -154,62 +154,22 @@ describe("get", function () {
 
 describe("update", function () {
     const updateData = {
-      name: "New",
-      description: "New Description",
-      numEmployees: 10,
-      logoUrl: "http://new.img",
+      title: "newJob",
+      salary: "78000",
+      equity: 0.1,
+      companyHandle: "c3",
     };
   
     test("works", async function () {
-      let company = await Company.update("c1", updateData);
-      expect(company).toEqual({
-        handle: "c1",
+      let job = await Job.update(testJobIds[0], updateData);
+      expect(job).toEqual({
+        id: testJobIds[0],
         ...updateData,
       });
   
-      const result = await db.query(
-            `SELECT handle, name, description, num_employees, logo_url
-             FROM companies
-             WHERE handle = 'c1'`);
-      expect(result.rows).toEqual([{
-        handle: "c1",
-        name: "New",
-        description: "New Description",
-        num_employees: 10,
-        logo_url: "http://new.img",
-      }]);
-    });
-  
-    test("works: null fields", async function () {
-      const updateDataSetNulls = {
-        name: "New",
-        description: "New Description",
-        numEmployees: null,
-        logoUrl: null,
-      };
-  
-      let company = await Company.update("c1", updateDataSetNulls);
-      expect(company).toEqual({
-        handle: "c1",
-        ...updateDataSetNulls,
-      });
-  
-      const result = await db.query(
-            `SELECT handle, name, description, num_employees, logo_url
-             FROM companies
-             WHERE handle = 'c1'`);
-      expect(result.rows).toEqual([{
-        handle: "c1",
-        name: "New",
-        description: "New Description",
-        num_employees: null,
-        logo_url: null,
-      }]);
-    });
-  
-    test("not found if no such company", async function () {
+    test("not found if no such job", async function () {
       try {
-        await Company.update("nope", updateData);
+        await Job.update(3333333, updateData);
         fail();
       } catch (err) {
         expect(err instanceof NotFoundError).toBeTruthy();
@@ -218,7 +178,7 @@ describe("update", function () {
   
     test("bad request with no data", async function () {
       try {
-        await Company.update("c1", {});
+        await Job.update(testJobIds[0], {});
         fail();
       } catch (err) {
         expect(err instanceof BadRequestError).toBeTruthy();
