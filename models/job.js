@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../db");
-const { BadRequestError, NotFoundError } = require("../expressError");
+const { NotFoundError } = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 
 class Job {
@@ -118,6 +118,48 @@ class Job {
 
     return job;
     }
+
+    //delete given job from database, return undefined
+    //throws NotFoundError if company not found
+
+    static async remove(id) {
+      const result = await db.query(
+            `DELETE
+             FROM jobs
+             WHERE id = $1
+             RETURNING id`,
+          [id]);
+      const job = result.rows[0];
+  
+      if (!job) throw new NotFoundError(`No job: ${id}`);
+    }
+  }
+  
+  
+  module.exports = Job;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
