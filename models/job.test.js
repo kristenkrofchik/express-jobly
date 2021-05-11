@@ -149,8 +149,7 @@ describe("get", function () {
     });
   });
 
-  ///TO DOOOOOOOOOOOOO
-  /************************************** update */
+  //test update a single job
 
 describe("update", function () {
     const updateData = {
@@ -186,19 +185,19 @@ describe("update", function () {
     });
   });
   
-  /************************************** remove */
+  //test remove a single job
   
   describe("remove", function () {
     test("works", async function () {
-      await Company.remove("c1");
+      await Job.remove(testJobIds[0]);
       const res = await db.query(
-          "SELECT handle FROM companies WHERE handle='c1'");
+          `SELECT id FROM jobss WHERE id=$1`, [testJobIds[0]]);
       expect(res.rows.length).toEqual(0);
     });
   
     test("not found if no such company", async function () {
       try {
-        await Company.remove("nope");
+        await Job.remove(44444444);
         fail();
       } catch (err) {
         expect(err instanceof NotFoundError).toBeTruthy();
