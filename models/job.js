@@ -90,6 +90,59 @@ class Job {
       return job;
     }
 
+    //partial update- update job with provided data. only changes data that is provided.
+    //data can include {title, salary, equity, companyHandle}
+    //returns {id, title, salary, equity, companyHandle}
+    //throws NotFoundError if not found
+
+    static async update(handle, data) {
+      const { setCols, values } = sqlForPartialUpdate(
+        data,
+        {
+          companyHandle: "company_handle",
+        });
+      const handleVarIdx = "$" + (values.length + 1);
+      
+      const querySql = `UPDATE jobs 
+                      SET ${setCols} 
+                      WHERE handle = ${handleVarIdx} 
+                      RETURNING id, 
+                                title, 
+                                salary, 
+                                equity, 
+                                company_handle AS "companyHandle"`;
+    const result = await db.query(querySql, [...values, handle]);
+    const job = result.rows[0];
+
+    if (!job) throw new NotFoundError(`No job: ${id}`);
+
+    return job;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
