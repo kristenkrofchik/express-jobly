@@ -125,3 +125,26 @@ describe("create", function () {
       ]);
     })
   });
+
+  //test get route for single job
+
+describe("get", function () {
+    test("works", async function () {
+      let job = await Job.get(testJobIds[0]);
+      expect(job).toEqual({
+        title: "job1",
+        salary: 100000,
+        equity: 0,
+        companyHandle: 'c1',
+      });
+    });
+  
+    test("not found if no such company", async function () {
+      try {
+        await Job.get(4500789);
+        fail();
+      } catch (err) {
+        expect(err instanceof NotFoundError).toBeTruthy();
+      }
+    });
+  });
