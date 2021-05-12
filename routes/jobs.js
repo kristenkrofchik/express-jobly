@@ -68,6 +68,50 @@ router.get("/", async function (req, res, next) {
     }
   });
 
+//PATCH a job's data
+// /[id] { fld1, fld2 } => { job }
+// fields can be { title, salary, equity, companyHandle }
+// returns { title, salary, equity, companyHandle }
+// authorization required: admin
+
+router.patch("/:id", ensureAdmin, async function (req, res, next) {
+    try {
+      const validator = jsonschema.validate(req.body, jobUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map(e => e.stack);
+        throw new BadRequestError(errs);
+      }
+  
+      const job = await Job.update(req.params.handle, req.body);
+      return res.json({ job });
+    } catch (err) {
+      return next(err);
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
