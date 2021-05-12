@@ -184,6 +184,7 @@ describe("update", function () {
       }
     });
   });
+});
   
   //test remove a single job
   
