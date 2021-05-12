@@ -10,7 +10,7 @@ const { ensureAdmin } = require("../middleware/auth");
 const Job = require("../models/job");
 
 const jobNewSchema = require("../schemas/jobNew.json");
-const jobUpdateSchema = require("../schemas/companyUpdate.json");
+const jobUpdateSchema = require("../schemas/jobUpdate.json");
 
 const router = new express.Router();
 
@@ -34,3 +34,44 @@ router.post("/", ensureAdmin, async function (req, res, next) {
       return next(err);
     }
   });
+
+//GET all jobs
+//{ jobs: [ { title, salary, equity, companyHandle }, ...] }}
+//can filter on: title, minSalary, hasEquity
+//authorization required: none
+
+router.get("/", async function (req, res, next) {
+    //get any info from query string. convert minSalary to integer from strings (if applicable)
+    const qString = req.query;
+    if (q.minSalary !== undefined) q.minSalary = parseInt(q.minSalary);
+  
+    try {
+      //findAll method using query string parameters (if applicable)
+      const jobs = await Job.findAll(qString);
+      return res.json({ jobs });
+    } catch (err) {
+      return next(err);
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
