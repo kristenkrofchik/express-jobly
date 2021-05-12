@@ -54,6 +54,20 @@ router.get("/", async function (req, res, next) {
     }
   });
 
+  //GET a single job by id
+  // /[id] => { job }
+  // job is { title, salary, equity, companyHandle }
+  //authorization required: none
+
+  router.get("/:id", async function (req, res, next) {
+    try {
+      const job = await Job.get(req.params.id);
+      return res.json({ job });
+    } catch (err) {
+      return next(err);
+    }
+  });
+
 
 
 
