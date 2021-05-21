@@ -5,6 +5,7 @@ const User = require("../models/user");
 const Company = require("../models/company");
 const { createToken } = require("../helpers/tokens");
 const Job = require("../models/job.js");
+const { testJobIds } = require("../../express-jobly-solution/routes/_testCommon.js");
 
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
@@ -69,6 +70,8 @@ async function commonBeforeAll() {
     password: "password3",
     isAdmin: false,
   });
+
+  await User.apply('ul', testJobIds[0]);
 }
 
 async function commonBeforeEach() {
