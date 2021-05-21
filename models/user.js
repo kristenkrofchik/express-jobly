@@ -205,6 +205,7 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
 
+//apply for job. accepts username and jobId. checks that job exists and username exists. if both exist, adds to applications table.
   static async apply(username, jobId) {
     const preCheck = await db.query(
       `SELECT id

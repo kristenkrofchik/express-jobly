@@ -228,3 +228,33 @@ describe("remove", function () {
     }
   });
 });
+
+//test apply method
+
+describe("apply", function () {
+  test("works", async function () {
+    await User.apply("u1", testJobIds[0]);
+    const res = await db.query(
+        "SELECT * FROM applications WHERE job_id=$1", [testJobIds[1]]);
+    expect(res.rows.length).toEqual(1);
+  });
+
+  test("not found if no such user", async function () {
+    try {
+      await User.apply("nope", testJobIds[0], 'applied');
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("not found if no such job", async function () {
+    try {
+      await User.apply("u1", 78787878787878, 'applied');
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
