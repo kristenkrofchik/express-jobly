@@ -23,8 +23,8 @@ describe("POST /jobs", function () {
     const newJob = {
       title: "new",
       salary: 85000,
-      equity: 0.1,
-      company_handle: "c1",
+      equity: "0.1",
+      companyHandle: "c1",
     };
   
     test("ok for admin", async function () {
@@ -54,7 +54,7 @@ describe("POST /jobs", function () {
           .post("/jobs")
           .send({
             ...newJob,
-            equity: 200,
+            equity: "200",
           })
           .set("authorization", `Bearer ${u1Token}`);
       expect(resp.statusCode).toEqual(400);
@@ -70,40 +70,38 @@ describe("POST /jobs", function () {
         jobs:
             [
               {
-                handle: "c1",
-                name: "C1",
-                description: "Desc1",
-                numEmployees: 1,
-                logoUrl: "http://c1.img",
+                id: expect.any(Number),
+                title: "j1",
+                salary: 100000,
+                equity: "0.1",
+                companyHandle: "c1" 
               },
               {
-                handle: "c2",
-                name: "C2",
-                description: "Desc2",
-                numEmployees: 2,
-                logoUrl: "http://c2.img",
+                id: expect.any(Number),
+                title: "j2",
+                salary: 200000,
+                equity: "0.2",
+                companyHandle: "c2" 
               },
               {
-                handle: "c3",
-                name: "C3",
-                description: "Desc3",
-                numEmployees: 3,
-                logoUrl: "http://c3.img",
+                id: expect.any(Number),
+                title: "j3",
+                salary: 35000,
+                companyHandle: "c3" 
               },
             ],
       });
     });
     test("ok for anon, with filters", async function() {
-      const resp = await request(app).get('/companies').query({minEmployees: 2, name: '3'});
+      const resp = await request(app).get('/jobs').query({hasEquity: false, title: '3'});
       expect(resp.body).toEqual({
-        companies:
+        jobs:
           [
             {
-              handle: "c3",
-              name: "C3",
-              description: "Desc3",
-              numEmployees: 3,
-              logoUrl: "http://c3.img",
+              id: expect.any(Number),
+              title: "j3",
+              salary: 35000,
+              companyHandle: "c3" 
             },
           ],
       });
@@ -113,9 +111,9 @@ describe("POST /jobs", function () {
       // there's no normal failure event which will cause this route to fail ---
       // thus making it hard to test that the error-handler works with it. This
       // should cause an error, all right :)
-      await db.query("DROP TABLE companies CASCADE");
+      await db.query("DROP TABLE jobs CASCADE");
       const resp = await request(app)
-          .get("/companies")
+          .get("/jobs")
           .set("authorization", `Bearer ${u1Token}`);
       expect(resp.statusCode).toEqual(500);
     });
