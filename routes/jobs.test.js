@@ -107,15 +107,25 @@ describe("POST /jobs", function () {
       });
     });
   
-    test("fails: test next() handler", async function () {
-      // there's no normal failure event which will cause this route to fail ---
-      // thus making it hard to test that the error-handler works with it. This
-      // should cause an error, all right :)
-      await db.query("DROP TABLE jobs CASCADE");
-      const resp = await request(app)
-          .get("/jobs")
-          .set("authorization", `Bearer ${u1Token}`);
-      expect(resp.statusCode).toEqual(500);
+
+  //GET /jobs/:id 
+  describe("GET /jobs/:id", function () {
+    test("works for anon", async function () {
+      const resp = await request(app).get(`/jobs/${testJobIds[0]}`);
+      expect(resp.body).toEqual({
+        job: {
+          id: testJobIds[0],
+          title: "j1",
+          salary: 100000,
+          equity: "0.1",
+          companyHandle: "c1"
+        },
+      });
+    });
+  
+    test("not found for no such job", async function () {
+      const resp = await request(app).get(`/jobs/455455455455`);
+      expect(resp.statusCode).toEqual(404);
     });
   });
 
