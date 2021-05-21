@@ -2,7 +2,6 @@
 
 const request = require("supertest");
 
-const db = require("../db");
 const app = require("../app");
 
 const {
@@ -11,6 +10,7 @@ const {
   commonAfterEach,
   commonAfterAll,
   u1Token,
+  adminToken
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -179,7 +179,29 @@ describe("POST /jobs", function () {
     });
   });
 
+//DELETE /jobs/:id 
 
+describe("DELETE /jobs/:id", function () {
+    test("works for admins", async function () {
+      const resp = await request(app)
+          .delete(`/jobs/${testJobIds[0]}`)
+          .set("authorization", `Bearer ${adminToken}`);
+      expect(resp.body).toEqual({ deleted: testJobIds[0] });
+    });
+  
+    test("unauth for anon", async function () {
+      const resp = await request(app)
+          .delete(`/jobs/${testJobIds[0]}`);
+      expect(resp.statusCode).toEqual(401);
+    });
+  
+    test("not found for no such job", async function () {
+      const resp = await request(app)
+          .delete(`/jobs/1414141414141414`)
+          .set("authorization", `Bearer ${adminToken}`);
+      expect(resp.statusCode).toEqual(404);
+    });
+  });
 
 
 
