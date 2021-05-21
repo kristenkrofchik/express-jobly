@@ -37,34 +37,13 @@ async function commonBeforeAll() {
         logoUrl: "http://c3.img",
       });
 
-  await Job.create(
-    {
-      title: "j1",
-      salary: 80000,
-      equity: 0,
-      company_handle: "c1"
-    });
-  await Job.create(
-    {
-      title: "j2",
-      salary: 90000,
-      equity: 0.1,
-      company_handle: "c2"
-    });
-  await Job.create(
-    {
-      title: "j3",
-      salary: 150000,
-      equity: 0.2,
-      company_handle: "c3"
-    });
-  await Job.create(
-    {
-      title: "j3",
-      salary: 68000,
-      equity: 0,
-      company_handle: "c3"
-    });
+  testJobIds[0] = (await Job.create(
+        { title: "j1", salary: 100000, equity: "0.1", companyHandle: "c1" })).id;
+  testJobIds[1] = (await Job.create(
+        { title: "j2", salary: 200000, equity: "0.2", companyHandle: "c2" })).id;
+  testJobIds[2] = (await Job.create(
+        { title: "j3", salary: 35000, /* equity null */ companyHandle: "c3" })).id;
+  
 
   await User.register({
     username: "u1",
