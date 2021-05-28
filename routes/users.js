@@ -121,7 +121,7 @@ router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, 
 });
 
 //POST /[username]/jobs/[jobId] => { applied: jobId }
-//allows user to apply for a job
+//allows user to apply for a job and saves that info.
 //Authorization required: admin, or the user themself.
 
 router.post("/:username/jobs/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
