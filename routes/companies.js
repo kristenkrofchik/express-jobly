@@ -57,6 +57,13 @@ router.get("/", async function (req, res, next) {
   if (q.maxEmployees !== undefined) q.maxEmployees = parseInt(q.maxEmployees);
 
   try {
+    //use jsonschema to confirm the data is in the correct format.
+    const validator = jsonschema.validate(q, companySearchSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+
     //findAll method using query string parameters (if applicable)
     const companies = await Company.findAll(qString);
     return res.json({ companies });
