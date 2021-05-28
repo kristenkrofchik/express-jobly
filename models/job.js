@@ -4,9 +4,10 @@ const db = require("../db");
 const { NotFoundError } = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 
+
 class Job {
 
-//create a job from data, update db, and return new job data.
+//create a job from received data, update db, and return new job data.
 //data should be { title, salary, equity, company_handle }
 //returns { title, salary, equity, companyHandle }
 
@@ -18,10 +19,10 @@ class Job {
            VALUES ($1, $2, $3, $4)
            RETURNING title, salary, equity, company_handle AS "companyHandle"`,
         [
-          title,
-          salary,
-          equity,
-          company_handle,
+          data.title,
+          data.salary,
+          data.equity,
+          data.company_handle,
         ],
     );
     const job = result.rows[0];
@@ -31,7 +32,7 @@ class Job {
 
   //Find all jobs
   //returns [{ title, salary, equity, companyHandle }, ...]
-  //add searchFilters object as paramter {minSalary: 10000, hasEquity: false, ...}
+  //add searchFilters object as paramter {minSalary: 10000, hasEquity: false, ...} if applicable
   static async findAll(searchFilters = {}) {
     const query = await db.query(
       `SELECT title, 
