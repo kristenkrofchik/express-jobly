@@ -4,7 +4,7 @@ const { BadRequestError } = require("../expressError");
 
 //dataToUpdate --- {key1: newVal, key2: newVal2}
 
-//jsToSql --- this maps a js key with its SQL column name --- {firstName: 'first_name, lastName: 'last_name}
+//jsToSql --- this maps a js key with its SQL column name --- {firstName: 'first_name', lastName: 'last_name}
 
 //example --- {firstName: 'Aliya', age: 32} =>{ setCols: '"first_name"=$1, "age"=$2', values: ['Aliya', 32] }
 

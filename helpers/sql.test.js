@@ -1,4 +1,3 @@
-//require file you are testing
 const { sqlForPartialUpdate } = require("./sql");
 
 describe("sqlForPartialUpdate", function() {
@@ -12,7 +11,7 @@ describe("sqlForPartialUpdate", function() {
             });
     })
     
-    test('works for two item', function() {
+    test('works for two items', function() {
         const result = sqlForPartialUpdate(
             { firstName: "Lisa", lastName: "Marcos" },
             { firstName: "first_name", lastName: "last_name"});
