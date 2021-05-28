@@ -19,10 +19,10 @@ class Job {
            VALUES ($1, $2, $3, $4)
            RETURNING title, salary, equity, company_handle AS "companyHandle"`,
         [
-          data.title,
-          data.salary,
-          data.equity,
-          data.company_handle,
+          title,
+          salary,
+          equity,
+          company_handle,
         ],
     );
     const job = result.rows[0];
