@@ -45,11 +45,12 @@ class Company {
   }
 
   /** Find all companies.
-   *
+   * With optional search filters: minEmployees, maxEmployees, name (case-insensitive, partial match)
+   * 
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  //add searchFilters object as paramter --- {minEmployees: 4, maxEmployees: 10, ...}
+  //if applicable, add searchFilters object as paramter --- {minEmployees: 4, maxEmployees: 10, ...}
   static async findAll(searchFilters = {}) {
     const query = await db.query(
           `SELECT handle,
