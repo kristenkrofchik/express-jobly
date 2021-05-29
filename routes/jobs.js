@@ -42,11 +42,11 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 
 router.get("/", async function (req, res, next) {
     //get any info from query string. convert minSalary to integer from strings (if applicable)
-    const qString = req.query;
-    if (q.minSalary !== undefined) q.minSalary = parseInt(q.minSalary);
-  
+
     try {
       //findAll method using query string parameters (if applicable)
+      const qString = req.query;
+      if (q.minSalary !== undefined) q.minSalary = parseInt(q.minSalary);
       const jobs = await Job.findAll(qString);
       return res.json({ jobs });
     } catch (err) {

@@ -214,27 +214,17 @@ class User {
 
 //apply for job. accepts username and jobId. checks that job exists and username exists. if both exist, adds to applications table.
   static async apply(username, jobId) {
-    const preCheck = await db.query(
-      `SELECT id
-       FROM jobs
-       WHERE id = $1`, [jobId]);
-    const job = preCheck.rows[0];
+    try {
+      await db.query(
+        `INSERT INTO applications (job_id, username)
+         VALUES ($1, $2)`,
+      [jobId, username]);
+      } 
+   catch(e) {
+      throw NotFoundError(`Not found`);
+     }
+   }
 
-    if (!job) throw new NotFoundError(`No job: ${jobId}`);
-
-    const preCheck2 = await db.query(
-      `SELECT username
-       FROM users
-       WHERE username = $1`, [username]);
-    const user = preCheck2.rows[0];
-
-    if (!user) throw new NotFoundError(`No username: ${username}`);
-
-    await db.query(
-      `INSERT INTO applications (job_id, username)
-       VALUES ($1, $2)`,
-    [jobId, username]);
-    } 
   }
 
 
